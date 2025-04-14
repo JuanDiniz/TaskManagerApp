@@ -1,32 +1,59 @@
-// Entities/Task.cs
-public class Task
+// Commands/CreateTaskCommand.cs
+public class CreateTaskCommand
 {
-    public Guid Id { get; private set; }
-    public string Title { get; private set; }
-    public string Description { get; private set; }
-    public TaskStatus Status { get; private set; }
-    public DateTime CreatedAt { get; private set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+}
 
-    public Task(string title, string description)
+// CommandHandlers/CreateTaskCommandHandler.cs
+public class CreateTaskCommandHandler
+{
+    private readonly ITaskRepository _repository;
+
+    public CreateTaskCommandHandler(ITaskRepository repository)
     {
-        Id = Guid.NewGuid();
-        Title = title;
-        Description = description;
-        Status = TaskStatus.Pending;
-        CreatedAt = DateTime.UtcNow;
+        _repository = repository;
+    }
+
+    public void Handle(CreateTaskCommand command)
+    {
+        var task = new Domain.Task(command.Title, command.Description);
+        _repository.Add(task);
     }
 }
 
-// Enums/TaskStatus.cs
-public enum TaskStatus
+// Queries/GetAllTasksQuery.cs
+public class GetAllTasksQuery { }
+
+// QueryHandlers/GetAllTasksQueryHandler.cs
+public class GetAllTasksQueryHandler
 {
-    Pending,
-    Completed
+    private readonly ITaskRepository _repository;
+
+    public GetAllTasksQueryHandler(ITaskRepository repository)
+    {
+        _repository = repository;
+    }
+
+    public IEnumerable<TaskDto> Handle(GetAllTasksQuery query)
+    {
+        return _repository.GetAll().Select(t => new TaskDto
+        {
+            Id = t.Id,
+            Title = t.Title,
+            Description = t.Description,
+            Status = t.Status.ToString(),
+            CreatedAt = t.CreatedAt
+        });
+    }
 }
 
-// Interfaces/ITaskRepository.cs
-public interface ITaskRepository
+// DTOs/TaskDto.cs
+public class TaskDto
 {
-    void Add(Task task);
-    IEnumerable<Task> GetAll();
+    public Guid Id { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public string Status { get; set; }
+    public DateTime CreatedAt { get; set; }
 }
