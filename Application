@@ -16,3 +16,17 @@ public class Task
         CreatedAt = DateTime.UtcNow;
     }
 }
+
+// Enums/TaskStatus.cs
+public enum TaskStatus
+{
+    Pending,
+    Completed
+}
+
+// Interfaces/ITaskRepository.cs
+public interface ITaskRepository
+{
+    void Add(Task task);
+    IEnumerable<Task> GetAll();
+}
