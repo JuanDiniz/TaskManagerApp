@@ -1,1 +1,28 @@
+// Controllers/TasksController.cs
+[ApiController]
+[Route("api/[controller]")]
+public class TasksController : ControllerBase
+{
+    private readonly CreateTaskCommandHandler _createHandler;
+    private readonly GetAllTasksQueryHandler _getHandler;
 
+    public TasksController(CreateTaskCommandHandler createHandler, GetAllTasksQueryHandler getHandler)
+    {
+        _createHandler = createHandler;
+        _getHandler = getHandler;
+    }
+
+    [HttpPost]
+    public IActionResult Create(CreateTaskCommand command)
+    {
+        _createHandler.Handle(command);
+        return Ok();
+    }
+
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var result = _getHandler.Handle(new GetAllTasksQuery());
+        return Ok(result);
+    }
+}
