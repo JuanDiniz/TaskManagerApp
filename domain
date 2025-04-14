@@ -1,1 +1,32 @@
+// Entities/Task.cs
+public class Task
+{
+    public Guid Id { get; private set; }
+    public string Title { get; private set; }
+    public string Description { get; private set; }
+    public TaskStatus Status { get; private set; }
+    public DateTime CreatedAt { get; private set; }
 
+    public Task(string title, string description)
+    {
+        Id = Guid.NewGuid();
+        Title = title;
+        Description = description;
+        Status = TaskStatus.Pending;
+        CreatedAt = DateTime.UtcNow;
+    }
+}
+
+// Enums/TaskStatus.cs
+public enum TaskStatus
+{
+    Pending,
+    Completed
+}
+
+// Interfaces/ITaskRepository.cs
+public interface ITaskRepository
+{
+    void Add(Task task);
+    IEnumerable<Task> GetAll();
+}
