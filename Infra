@@ -1,1 +1,15 @@
+// Repositories/InMemoryTaskRepository.cs
+public class InMemoryTaskRepository : ITaskRepository
+{
+    private readonly List<Domain.Task> _tasks = new();
 
+    public void Add(Domain.Task task)
+    {
+        _tasks.Add(task);
+    }
+
+    public IEnumerable<Domain.Task> GetAll()
+    {
+        return _tasks;
+    }
+}
